@@ -10,6 +10,9 @@ st.title("🎓 Predicción de Calificación - Admisión UNHEVAL")
 def cargar_datos():
     df = pd.read_csv('LIMPIO_ADMISION_UNI_OFICIAL0.csv', encoding='latin1', sep=';')
     df['EDAD'] = 2024 - df['AÑO_NACIMIENTO']
+
+    # Asegurar tipo numérico en CALIFICACIÓN_FINAL
+    df['CALIFICACIÓN_FINAL'] = pd.to_numeric(df['CALIFICACIÓN_FINAL'], errors='coerce')
     df = df[['EDAD', 'GÉNERO', 'CALIFICACIÓN_FINAL']].dropna()
     df = pd.get_dummies(df, columns=['GÉNERO'], drop_first=True)
     return df
