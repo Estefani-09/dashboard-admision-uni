@@ -148,16 +148,21 @@ if 'MODALIDAD' in df.columns:
             st.subheader("🎓 Promedio de Calificaciones por Departamento")
             st.bar_chart(avg_by_dept)
         
-        if 'COLEGIO_DISTRITO' in df.columns:
+
             st.subheader("🏘️ Análisis por Distrito del Colegio")
         
-            top_distritos = df['COLEGIO_DISTRITO'].value_counts().head(10).index.tolist()
-            df_top = df[df['COLEGIO_DISTRITO'].isin(top_distritos)]
+            top_distritos = df['COLEGIO_DISTRITO'].value_counts().head(20).index.tolist()
+            df_top = df[df['COLEGIO_DISTRITO'].isin(top_distritos) & df['CALIFICACIÓN_FINAL'].notna()]
         
-            # Calificaciones por distrito (boxplot solo para los 10 distritos con más postulantes)
-            fig_dist, ax_dist = plt.subplots(figsize=(10, 5))
-            sns.boxplot(x='COLEGIO_DISTRITO', y='CALIFICACIÓN_FINAL', data=df_top, ax=ax_dist)
-            ax_dist.tick_params(axis='x', rotation=45)
-            st.pyplot(fig_dist)
+            if not df_top.empty:
+                fig_dist, ax_dist = plt.subplots(figsize=(12, 5))
+                sns.boxplot(x='COLEGIO_DISTRITO', y='CALIFICACIÓN_FINAL', data=df_top, ax=ax_dist)
+                ax_dist.tick_params(axis='x', rotation=45)
+                st.pyplot(fig_dist)
+            else:
+                st.warning("No hay suficientes datos válidos para mostrar el gráfico por distrito.")
+
+
+
 
 
