@@ -8,7 +8,7 @@ st.title("🎓 Predicción de Calificación - Admisión UNHEVAL")
 # Cargar datos
 @st.cache_data
 def cargar_datos():
-    df = pd.read_csv('LIMPIO_ADMISION_UNI_OFICIAL0.csv')
+    df = pd.read_csv('LIMPIO_ADMISION_UNI_OFICIAL0.csv', encoding='latin1', sep=';')
     df['EDAD'] = 2024 - df['AÑO_NACIMIENTO']
     df = df[['EDAD', 'GÉNERO', 'CALIFICACIÓN_FINAL']].dropna()
     df = pd.get_dummies(df, columns=['GÉNERO'], drop_first=True)
