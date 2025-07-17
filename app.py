@@ -112,19 +112,25 @@ if 'MODALIDAD' in df.columns:
 
         # Proyección futura para cada modalidad (opcional básico)
         
-        st.markdown("**Proyección simple de postulantes por modalidad**")
-        for modalidad in modalidad_anio.columns:
-            serie = modalidad_anio[modalidad].reset_index()
-            X = serie[['AÑO_POSTULA']]
-            y = serie[modalidad]
-
-            if len(X) >= 2:
-                modelo_mod = LinearRegression()
-                modelo_mod.fit(X, y)
-
-                años_futuros = np.arange(X['AÑO_POSTULA'].max() + 1, X['AÑO_POSTULA'].max() + 4).reshape(-1, 1)
-                pred = modelo_mod.predict(años_futuros)
-
-                df_pred = pd.Series(pred, index=años_futuros.flatten(), name=f'{modalidad} (Proyección)')
-                st.line_chart(pd.concat([serie.set_index('AÑO_POSTULA')[modalidad], df_pred]))
+        st.markdown("**Selecciona una modalidad para proyectar su crecimiento:**")
+        opcion_modalidad = st.selectbox("Modalidades disponibles:", modalidad_anio.columns.tolist())
+        
+        # Datos de la modalidad seleccionada
+        serie = modalidad_anio[opcion_modalidad].reset_index()
+        X_mod = serie[['AÑO_POSTULA']]
+        y_mod = serie[opcion_modalidad]
+        
+        if len(X_mod) >= 2:
+            modelo_mod = LinearRegression()
+            modelo_mod.fit(X_mod, y_mod)
+        
+            años_futuros = np.arange(X_mod['AÑO_POSTULA'].max() + 1, X_mod['AÑO_POSTULA'].max() + 4).reshape(-1, 1)
+            pred = modelo_mod.predict(años_futuros)
+        
+            df_pred = pd.Series(pred, index=años_futuros.flatten(), name='Proyección')
+            grafico = pd.concat([serie.set_index('AÑO_POSTULA')[opcion_modalidad], df_pred])
+        
+            st.line_chart(grafico)
+        else:
+            st.warning("No hay suficientes datos para proyectar esta modalidad.")
 
