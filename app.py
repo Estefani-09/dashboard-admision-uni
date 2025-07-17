@@ -78,7 +78,7 @@ if 'AÑO_POSTULA' in df.columns:
 
 # ----------- SECCIÓN 5: Comparación de Calificación por Género -----------
 
-st.subheader("⚖️ Comparación de Calificaciones por Género
+st.subheader("⚖️ Comparación de Calificaciones por Género")
 
 # Asegurar que GÉNERO esté presente para gráfico
 if 'GÉNERO_MASCULINO' in df.columns:
