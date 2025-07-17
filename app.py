@@ -17,17 +17,18 @@ def cargar_datos():
 df = cargar_datos()
 
 # Modelo
-X = df[['EDAD', 'GÉNERO_M']]
+X = df[['EDAD', 'GÉNERO_MASCULINO']]  
 y = df['CALIFICACIÓN_FINAL']
 modelo = LinearRegression()
 modelo.fit(X, y)
 
+
 # Inputs del usuario
 edad = st.slider("📅 Edad del postulante", min_value=15, max_value=40, value=18)
 genero = st.selectbox("⚧️ Género", ["MASCULINO", "FEMENINO"])
-genero_m = 1 if genero == "MASCULINO" else 0
+genero_masculino = 1 if genero == "MASCULINO" else 0  #
 
-entrada = pd.DataFrame([[edad, genero_m]], columns=['EDAD', 'GÉNERO_M'])
+entrada = pd.DataFrame([[edad, genero_masculino]], columns=['EDAD', 'GÉNERO_MASCULINO']) 
 pred = modelo.predict(entrada)[0]
 
 st.metric("🎯 Calificación estimada", f"{pred:.2f}")
