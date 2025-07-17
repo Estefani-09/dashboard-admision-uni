@@ -6,7 +6,7 @@ import seaborn as sns
 import numpy as np
 
 st.set_page_config(layout="wide")
-st.title("🎓 Predicción de Calificación - Admisión UNHEVAL")
+st.title("🎓 Predicción de Calificación - Admisión UNI")
 
 # Cargar datos
 @st.cache_data
