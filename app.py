@@ -76,32 +76,10 @@ if 'AÑO_POSTULA' in df.columns:
     df_pred = pd.DataFrame(pred_futuros, index=futuros.flatten(), columns=["Proyectado"])
     st.line_chart(pd.concat([total_por_año, df_pred.squeeze()], axis=0))
 
-# ----------- SECCIÓN 5: Comparación de Calificación por Género -----------
 
-st.subheader("⚖️ Comparación de Calificaciones por Género")
 
-# Asegurar que GÉNERO esté presente para gráfico
-if 'GÉNERO_MASCULINO' in df.columns:
-    df['GÉNERO_LABEL'] = df['GÉNERO_MASCULINO'].apply(lambda x: "MASCULINO" if x == 1 else "FEMENINO")
-else:
-    df['GÉNERO_LABEL'] = df['GÉNERO_FEMENINO'].apply(lambda x: "FEMENINO" if x == 1 else "MASCULINO")
-
-fig2, ax2 = plt.subplots()
-sns.boxplot(x='GÉNERO_LABEL', y='CALIFICACIÓN_FINAL', data=df, ax=ax2)
-st.pyplot(fig2)
 
 # ----------- SECCIÓN 6: Análisis por MODALIDAD -----------
-
-if 'MODALIDAD' in df.columns:
-    st.subheader("🎓 Análisis por Modalidad de Postulación")
-
-# Distribución de calificación por modalidad
-    
-    st.markdown("**Comparación de calificaciones por modalidad**")
-    fig3, ax3 = plt.subplots(figsize=(10, 4))
-    sns.boxplot(x='MODALIDAD', y='CALIFICACIÓN_FINAL', data=df, ax=ax3)
-    ax3.tick_params(axis='x', rotation=45)
-    st.pyplot(fig3)
 
         # Conteo de postulantes por modalidad y año
 
