@@ -136,12 +136,15 @@ if 'MODALIDAD' in df.columns:
 
         # ----------- SECCIÓN 7: Análisis por Departamento y Distrito del Colegio -----------
 
-       
-        if 'COLEGIO_DEPARTAMENTO' in df.columns and 'AÑO_POSTULA' in df.columns:
+               if 'COLEGIO_DEPARTAMENTO' in df.columns and 'AÑO_POSTULA' in df.columns: 
             st.subheader("📍 Proyección de postulantes por Departamento del Colegio")
+        
+            df['COLEGIO_DEPARTAMENTO'] = df['COLEGIO_DEPARTAMENTO'].astype(str).str.strip()
             depto_sel = st.selectbox("Selecciona un departamento del colegio:", df['COLEGIO_DEPARTAMENTO'].unique())
+        
             df_depto = df[df['COLEGIO_DEPARTAMENTO'] == depto_sel]
             serie_depto = df_depto.groupby('AÑO_POSTULA').size().reset_index(name='Postulantes')
+        
             if len(serie_depto) >= 2:
                 modelo_depto = LinearRegression()
                 modelo_depto.fit(serie_depto[['AÑO_POSTULA']], serie_depto[['Postulantes']])
@@ -149,20 +152,6 @@ if 'MODALIDAD' in df.columns:
                 pred = modelo_depto.predict(años_futuros)
                 df_pred = pd.Series(pred.flatten(), index=años_futuros.flatten(), name='Proyección')
                 st.line_chart(pd.concat([serie_depto.set_index('AÑO_POSTULA')['Postulantes'], df_pred]))
-        
-        if 'COLEGIO_DISTRITO' in df.columns and 'AÑO_POSTULA' in df.columns:
-            st.subheader("🏫 Proyección de postulantes por Distrito del Colegio")
-            distrito_sel = st.selectbox("Selecciona un distrito del colegio:", df['COLEGIO_DISTRITO'].unique())
-            df_dist = df[df['COLEGIO_DISTRITO'] == distrito_sel]
-            serie_dist = df_dist.groupby('AÑO_POSTULA').size().reset_index(name='Postulantes')
-            if len(serie_dist) >= 2:
-                modelo_dist = LinearRegression()
-                modelo_dist.fit(serie_dist[['AÑO_POSTULA']], serie_dist[['Postulantes']])
-                años_futuros = np.arange(serie_dist['AÑO_POSTULA'].max() + 1, serie_dist['AÑO_POSTULA'].max() + 4).reshape(-1, 1)
-                pred = modelo_dist.predict(años_futuros)
-                df_pred = pd.Series(pred.flatten(), index=años_futuros.flatten(), name='Proyección')
-                st.line_chart(pd.concat([serie_dist.set_index('AÑO_POSTULA')['Postulantes'], df_pred]))
-        
-
-
-
+            else:
+                st.warning("No hay suficientes datos para proyectar este departamento.")
+      
