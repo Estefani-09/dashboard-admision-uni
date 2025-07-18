@@ -115,22 +115,31 @@ if 'AÑO_POSTULA' in df.columns:
         # ----------- SECCIÓN 7: Análisis por Departamento y Distrito del Colegio -----------
 
            # SECCIÓN 7: Proyección por Departamento del Colegio
-        if 'COLEGIO_DEPARTAMENTO' in df.columns and 'AÑO_POSTULA' in df.columns:
-            st.subheader("📍 Proyección de postulantes por Departamento del Colegio")
+       st.markdown("**Selecciona una modalidad para ver su proyección futura:**")
+        opcion_modalidad = st.selectbox("Modalidades disponibles:", modalidad_anio.columns.tolist())
         
-            df['COLEGIO_DEPARTAMENTO'] = df['COLEGIO_DEPARTAMENTO'].astype(str).str.strip()
-            depto_sel = st.selectbox("Selecciona un departamento del colegio:", df['COLEGIO_DEPARTAMENTO'].unique())
+        serie = modalidad_anio[opcion_modalidad].reset_index()
+        st.write("🔍 Datos disponibles para esta modalidad:", serie)
         
-            df_depto = df[df['COLEGIO_DEPARTAMENTO'] == depto_sel]
-            serie_depto = df_depto.groupby('AÑO_POSTULA').size().reset_index(name='Postulantes')
+        X_mod = serie[['AÑO_POSTULA']]
+        y_mod = serie[opcion_modalidad]
         
-            if len(serie_depto) >= 2:
-                modelo_depto = LinearRegression()
-                modelo_depto.fit(serie_depto[['AÑO_POSTULA']], serie_depto[['Postulantes']])
-                años_futuros = np.arange(serie_depto['AÑO_POSTULA'].max() + 1, serie_depto['AÑO_POSTULA'].max() + 4).reshape(-1, 1)
-                pred = modelo_depto.predict(años_futuros)
-                df_pred = pd.Series(pred.flatten(), index=años_futuros.flatten(), name='Proyección')
-                st.line_chart(pd.concat([serie_depto.set_index('AÑO_POSTULA')['Postulantes'], df_pred]))
-            else:
-                st.warning("No hay suficientes datos para proyectar este departamento.")
+        if len(X_mod) >= 2:
+            modelo_mod = LinearRegression()
+            modelo_mod.fit(X_mod, y_mod)
+        
+            años_futuros = np.arange(X_mod['AÑO_POSTULA'].max() + 1, X_mod['AÑO_POSTULA'].max() + 4).reshape(-1, 1)
+            pred = modelo_mod.predict(años_futuros)
+        
+            df_pred = pd.Series(pred.flatten(), index=años_futuros.flatten(), name='Proyección')
+        
+            # Evitar duplicados
+            grafico = pd.concat([
+                serie.set_index('AÑO_POSTULA')[opcion_modalidad],
+                df_pred[~df_pred.index.isin(serie['AÑO_POSTULA'])]
+            ])
+        
+            st.line_chart(grafico)
+        else:
+            st.warning("No hay suficientes datos para proyectar esta modalidad.")
 
