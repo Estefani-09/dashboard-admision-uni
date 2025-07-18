@@ -136,7 +136,8 @@ if 'MODALIDAD' in df.columns:
 
         # ----------- SECCIÓN 7: Análisis por Departamento y Distrito del Colegio -----------
 
-               if 'COLEGIO_DEPARTAMENTO' in df.columns and 'AÑO_POSTULA' in df.columns: 
+           # SECCIÓN 7: Proyección por Departamento del Colegio
+        if 'COLEGIO_DEPARTAMENTO' in df.columns and 'AÑO_POSTULA' in df.columns:
             st.subheader("📍 Proyección de postulantes por Departamento del Colegio")
         
             df['COLEGIO_DEPARTAMENTO'] = df['COLEGIO_DEPARTAMENTO'].astype(str).str.strip()
@@ -154,4 +155,4 @@ if 'MODALIDAD' in df.columns:
                 st.line_chart(pd.concat([serie_depto.set_index('AÑO_POSTULA')['Postulantes'], df_pred]))
             else:
                 st.warning("No hay suficientes datos para proyectar este departamento.")
-      
+
